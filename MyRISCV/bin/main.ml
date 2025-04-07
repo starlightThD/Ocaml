@@ -25,7 +25,6 @@ let rec string_of_expr (e : Ast.expr) : string =
   | If (e1, e2, e3) -> Printf.sprintf "If (%s, %s, %s)" (string_of_expr e1) (string_of_expr e2) (string_of_expr e3)
   | Func (var, body) -> Printf.sprintf "Func (%s, %s)" var (string_of_expr body)
   | App (e1, e2) -> Printf.sprintf "App (%s, %s)" (string_of_expr e1) (string_of_expr e2)
-
 let parse s : Ast.expr =
   try 
   let lexbuf = Lexing.from_string s in
@@ -152,11 +151,6 @@ let functions : string list ref = ref []
       
       (* 其他表达式处理... *)
     
-
-(* and compile_expr_func (local_env : (string * int) list) (closure_env : (string * int) list) (cur_offset : int) (expr : Ast.expr) : string =
-  match expr with
-  | _ -> failwith "TODO" *)
-
 let compiler_program (e : Ast.expr) : string =
   let body_code = compile_expr [] 0 e in
   let prologue = 
@@ -174,28 +168,30 @@ let compiler_program (e : Ast.expr) : string =
   in
   let func_code = String.concat "\n" !functions in
   prologue ^ body_code ^ epilogue ^ "\n" ^ func_code
-  
-let () =
-  let filename = "test/simpl_test.in" in
-  (* let filename = "test/simpl_test2.in" in *)
+  (* 编译程序：将表达式编译成汇编代码 *)
+let process_file input_file output_file =
+  (* let filename = "test/simpl_test.in" in
   let in_channel = open_in filename in
   let file_content = really_input_string in_channel (in_channel_length in_channel) in
+  close_in in_channel; *)
+  let in_channel = open_in input_file in
+  let file_content = really_input_string in_channel (in_channel_length in_channel) in
   close_in in_channel;
-
-  (* let res = interp file_content in
-  Printf.printf "Result of interpreting %s:\n%s\n\n" filename res;
-
-  let res = interp_big file_content in
-  Printf.printf "Result of interpreting %s with big-step model:\n%s\n\n" filename res; *)
 
   let ast = parse file_content in 
   Printf.printf "AST: %s\n" (string_of_expr ast);
 
-  let output_file = Sys.argv.(1) in
   let oc = open_out output_file in
 
   let asm_code = compiler_program ast in
 
   output_string oc asm_code;
   close_out oc;
-  Printf.printf "Generated RISC-V code saved to: %s\n" output_file
+  Printf.printf "Generated RISC-V code %s saved to: %s\n" input_file output_file
+
+  let () =
+  for i = 1 to 4 do
+    let input_file = Printf.sprintf "test/input/simpl_test%d.in" i in
+    let output_file = Printf.sprintf "test/output/simpl_test%d.out" i in
+    process_file input_file output_file
+  done
