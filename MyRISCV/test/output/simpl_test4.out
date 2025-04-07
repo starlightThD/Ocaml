@@ -5,7 +5,7 @@ main:
 	mv fp, sp
 	li a0, 10
 	sd a0, -0(fp)
-.L0:
+.L2:
 	addi sp, sp, -16
 	sd ra, 8(sp)
 	sd fp, 0(sp)
