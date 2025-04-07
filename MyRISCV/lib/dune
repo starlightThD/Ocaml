@@ -1,0 +1,3 @@
+(library
+ (name lib)
+ (modules ast lexer parser simpl_riscv))

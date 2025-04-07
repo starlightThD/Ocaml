@@ -1,0 +1,4 @@
+(executable
+ (public_name MyRISCV)
+ (name main)
+ (libraries lib))

@@ -1,0 +1,4 @@
+(library
+ (name lib)   ; 库名称，用于其他模块引用
+ (modules ast parser lexer) ; 包含 AST 定义、词法分析器和语法分析器
+)
